@@ -25,7 +25,7 @@ const books = [
     { id: 5, name: 'The two Towers', authorId: 2},
     { id: 6, name: 'The return of king', authorId: 2},
     { id: 7, name: 'The way of shadows', authorId: 3},
-    { id: 3, name: 'Beyond the sahdows', authorId: 3},
+    { id: 8, name: 'Beyond the sahdows', authorId: 3},
 ]
 
 const BookType = new GraphQLObjectType({
@@ -94,9 +94,29 @@ const RootQueryType = new GraphQLObjectType({
     })
 })
 
+const RootMutationType = new GraphQLObjectType({
+    name: 'Mutation',
+    description: 'Root Mutation',
+    fields: () => ({
+        addBook: {
+            type: BookType,
+            description: 'Add a book',
+            args: {
+                name: { type: GraphQLNonNull(GraphQLString)},
+                authorId: { type: GraphQLNonNull(GraphQLInt)}
+            },
+            resolve: (parent, args)=> {
+                const book = { id: books.length + 1, name: args.name, authorId:args.authorId }
+                books.push(book)
+                return book
+            }
+        }
+    })
+})
 
 const schema = new GraphQLSchema({
-    query: RootQueryType
+    query: RootQueryType,
+    mutation: RootMutationType
 })
 
 // const schema = new GraphQLSchema({
